@@ -11,13 +11,11 @@
     </ion-toolbar>
   </ion-header>
 
-  <!-- Loading -->
   <div *ngIf="cargando" class="loading-container">
     <ion-spinner name="crescent"></ion-spinner>
     <p>Loading market data...</p>
   </div>
 
-  <!-- Lista -->
   <ion-list *ngIf="!cargando">
     <ion-item 
       *ngFor="let crypto of cryptos" 
@@ -48,7 +46,6 @@
     </ion-item>
   </ion-list>
 
-  <!-- Modal -->
   <ion-modal #modal [isOpen]="modalAbierto" (willDismiss)="cerrarModal()">
     <ng-template>
       <ion-header>

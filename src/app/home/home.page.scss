@@ -1,8 +1,3 @@
-// ============================================
-// ESTILO FINANCIERO - VERSIÓN SIMPLIFICADA
-// ============================================
-
-// Loading
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -23,19 +18,16 @@
   }
 }
 
-// Header
 ion-title {
   font-size: 20px;
   font-weight: 600;
 }
 
-// Lista
 ion-list {
   background: transparent;
   padding: 8px 12px;
 }
 
-// Cada item
 ion-item {
   --border-radius: 12px;
   margin-bottom: 8px;
@@ -47,7 +39,6 @@ ion-item {
   --border-color: var(--ion-color-step-150);
 }
 
-// Avatar
 ion-avatar {
   width: 40px;
   height: 40px;
@@ -59,7 +50,6 @@ ion-avatar {
   }
 }
 
-// Estilos para los textos dentro de ion-label
 ion-label {
   h2 {
     font-size: 16px;
@@ -99,7 +89,6 @@ ion-label {
   }
 }
 
-// Market Cap a la derecha
 .market-cap {
   text-align: right;
   
@@ -117,9 +106,6 @@ ion-label {
   }
 }
 
-// ============================================
-// MODAL
-// ============================================
 .detail-header {
   text-align: center;
   padding: 24px 20px;

@@ -29,10 +29,10 @@ export class HomePage implements AfterViewInit {
         this.cryptos = data;
         this.fechaActualizacion = new Date();
         this.cargando = false;
-        console.log('✅ Criptomonedas cargadas:', this.cryptos.length);
+        console.log('Criptomonedas cargadas:', this.cryptos.length);
       },
       error: (err: any) => {
-        console.error('❌ Error al cargar criptomonedas:', err);
+        console.error('Error al cargar criptomonedas:', err);
         this.cargando = false;
       }
     });
@@ -41,7 +41,7 @@ export class HomePage implements AfterViewInit {
   verDetalle(crypto: any) {
     this.cryptoSeleccionado = crypto;
     this.modalAbierto = true;
-    console.log('🔍 Detalle de:', crypto.name);
+    console.log('Detalle de:', crypto.name);
   }
 
   cerrarModal() {
