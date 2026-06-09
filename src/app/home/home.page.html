@@ -1,20 +1,137 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title>Market Overview</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+      <ion-title size="large">Market Overview</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <!-- Loading -->
+  <div *ngIf="cargando" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading market data...</p>
   </div>
+
+  <!-- Lista -->
+  <ion-list *ngIf="!cargando">
+    <ion-item 
+      *ngFor="let crypto of cryptos" 
+      (click)="verDetalle(crypto)"
+      button
+      detail="false">
+      
+      <ion-avatar slot="start">
+        <img [src]="crypto.image">
+      </ion-avatar>
+      
+      <ion-label>
+        <h2>
+          {{ crypto.name }}
+          <span class="symbol">{{ crypto.symbol.toUpperCase() }}</span>
+        </h2>
+        <p class="price">${{ crypto.current_price?.toLocaleString('en-US') }}</p>
+        <p class="change" [style.color]="crypto.price_change_percentage_24h >= 0 ? '#2dd36f' : '#eb445a'">
+          <ion-icon [name]="crypto.price_change_percentage_24h >= 0 ? 'trending-up' : 'trending-down'"></ion-icon>
+          {{ crypto.price_change_percentage_24h?.toFixed(2) }}%
+        </p>
+      </ion-label>
+      
+      <div class="market-cap" slot="end">
+        <ion-text color="medium">Market Cap</ion-text>
+        <ion-note>{{ formatMarketCap(crypto.market_cap) }}</ion-note>
+      </div>
+    </ion-item>
+  </ion-list>
+
+  <!-- Modal -->
+  <ion-modal #modal [isOpen]="modalAbierto" (willDismiss)="cerrarModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ cryptoSeleccionado?.name }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="cerrarModal()">
+              <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <div class="detail-header">
+          <div class="detail-logo">
+            <img [src]="cryptoSeleccionado?.image">
+          </div>
+          <div class="detail-symbol">{{ cryptoSeleccionado?.symbol?.toUpperCase() }}</div>
+          <div class="detail-price">${{ cryptoSeleccionado?.current_price?.toLocaleString('en-US') }}</div>
+          <div class="detail-change" [style.color]="cryptoSeleccionado?.price_change_percentage_24h >= 0 ? '#2dd36f' : '#eb445a'">
+            <ion-icon [name]="cryptoSeleccionado?.price_change_percentage_24h >= 0 ? 'trending-up' : 'trending-down'"></ion-icon>
+            {{ cryptoSeleccionado?.price_change_percentage_24h?.toFixed(2) }}% (24h)
+          </div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">RANK</div>
+            <div class="metric-value rank">#{{ cryptoSeleccionado?.market_cap_rank }}</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">MARKET CAP</div>
+            <div class="metric-value">{{ formatMarketCap(cryptoSeleccionado?.market_cap) }}</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">VOLUME (24H)</div>
+            <div class="metric-value">${{ (cryptoSeleccionado?.total_volume / 1e9).toFixed(2) }}B</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">ATH</div>
+            <div class="metric-value">${{ cryptoSeleccionado?.ath?.toLocaleString('en-US') || 'N/A' }}</div>
+          </div>
+        </div>
+
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>24h Range</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-item lines="none">
+              <ion-label>Low</ion-label>
+              <ion-note slot="end">${{ cryptoSeleccionado?.low_24h?.toLocaleString('en-US') }}</ion-note>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-label>High</ion-label>
+              <ion-note slot="end">${{ cryptoSeleccionado?.high_24h?.toLocaleString('en-US') }}</ion-note>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Supply</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-item lines="none">
+              <ion-label>Circulating</ion-label>
+              <ion-note slot="end">{{ cryptoSeleccionado?.circulating_supply?.toLocaleString() }} {{ cryptoSeleccionado?.symbol?.toUpperCase() }}</ion-note>
+            </ion-item>
+            <ion-item lines="none" *ngIf="cryptoSeleccionado?.total_supply">
+              <ion-label>Total</ion-label>
+              <ion-note slot="end">{{ cryptoSeleccionado?.total_supply?.toLocaleString() }} {{ cryptoSeleccionado?.symbol?.toUpperCase() }}</ion-note>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+
+        <div class="update-footer">
+          <ion-text color="medium">
+            <small>Last updated: {{ fechaActualizacion | date:'dd/MM/yyyy HH:mm:ss' }}</small>
+          </ion-text>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>
